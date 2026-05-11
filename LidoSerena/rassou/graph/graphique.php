@@ -1,7 +1,7 @@
 <?php
 // 1) Connexion à la base de données
 $host = 'localhost';
-$dbname = 'lidosererna';
+$dbname = 'lidoserena';
 $username = 'root';
 $password = ''; // Remplace par ton vrai mot de passe
 
@@ -26,7 +26,7 @@ $commandes = [];
 if ($result && $result->num_rows > 0) {
   while ($row = $result->fetch_assoc()) {
     $plats[] = $row['produit_nom'];
-    $commandes[] = (int)$row['total_commandes'];
+    $commandes[] = (int) $row['total_commandes'];
   }
 }
 
@@ -61,18 +61,18 @@ LIMIT 6";
 echo "<!-- Debug de la requête -->\n";
 $result_prix = $conn->query($sql_prix);
 if (!$result_prix) {
-    echo "<!-- Erreur SQL : " . $conn->error . " -->\n";
+  echo "<!-- Erreur SQL : " . $conn->error . " -->\n";
 } else {
-    echo "<!-- Nombre de résultats : " . $result_prix->num_rows . " -->\n";
+  echo "<!-- Nombre de résultats : " . $result_prix->num_rows . " -->\n";
 }
 
 $dates_commandes = [];
 $prix_commandes = [];
 
 while ($row = $result_prix->fetch_assoc()) {
-    echo "<!-- Ligne : " . print_r($row, true) . " -->\n";
-    $dates_commandes[] = $row['date'];
-    $prix_commandes[] = floatval($row['prix_total']);
+  echo "<!-- Ligne : " . print_r($row, true) . " -->\n";
+  $dates_commandes[] = $row['date'];
+  $prix_commandes[] = floatval($row['prix_total']);
 }
 
 // Debug : Vérifier les données
@@ -104,7 +104,7 @@ $mois = ["Jan", "Fév", "Mar", "Avr", "Mai", "Jun", "Jul", "Aoû", "Sep", "Oct",
 $nb_clients = array_fill(0, 12, 0); // Initialise tableau avec 12 zéros
 
 while ($row = $result_clients->fetch_assoc()) {
-  $nb_clients[$row['mois'] - 1] = (int)$row['nb_clients'];
+  $nb_clients[$row['mois'] - 1] = (int) $row['nb_clients'];
 }
 
 // Calcul du chiffre d'affaires total
@@ -112,7 +112,7 @@ $sql_ca_total = "SELECT SUM(prix_total) as ca_total FROM commandes";
 $result_ca = $conn->query($sql_ca_total);
 $ca_total = 0;
 if ($result_ca && $row_ca = $result_ca->fetch_assoc()) {
-    $ca_total = floatval($row_ca['ca_total']);
+  $ca_total = floatval($row_ca['ca_total']);
 }
 
 $conn->close();
@@ -151,37 +151,44 @@ $conn->close();
     }
 
     nav a {
-            color: black;
-            text-decoration: none;
-            margin: 0 15px;
-            font-weight: bold;
-            font-size: 16px;
-            transition: color 0.3s ease;
-        }
+      color: black;
+      text-decoration: none;
+      margin: 0 15px;
+      font-weight: bold;
+      font-size: 16px;
+      transition: color 0.3s ease;
+    }
 
-        nav a:hover {
-            color: #ff9800;
-        }
+    nav a:hover {
+      color: #ff9800;
+    }
 
     .ca-total {
-        text-align: center;
-        font-size: 28px;
-        font-weight: bold;
-        color: #36A2EB;
-        margin: 20px auto;
-        padding: 20px;
-        background: white;
-        border-radius: 8px;
-        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-        width: 80%;
-        max-width: 600px;
-        border-left: 5px solid #36A2EB;
-        animation: fadeIn 0.5s ease-in;
+      text-align: center;
+      font-size: 28px;
+      font-weight: bold;
+      color: #36A2EB;
+      margin: 20px auto;
+      padding: 20px;
+      background: white;
+      border-radius: 8px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      width: 80%;
+      max-width: 600px;
+      border-left: 5px solid #36A2EB;
+      animation: fadeIn 0.5s ease-in;
     }
 
     @keyframes fadeIn {
-        from { opacity: 0; transform: translateY(-20px); }
-        to { opacity: 1; transform: translateY(0); }
+      from {
+        opacity: 0;
+        transform: translateY(-20px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
     }
   </style>
 </head>
@@ -245,7 +252,7 @@ $conn->close();
           },
           tooltip: {
             callbacks: {
-              label: function(context) {
+              label: function (context) {
                 const label = context.label || '';
                 const value = context.raw || 0;
                 return `${label}: ${value} commandes`;
@@ -258,39 +265,39 @@ $conn->close();
 
     // Modifier le graphique des prix
     new Chart(document.getElementById('priceChart').getContext('2d'), {
-        type: 'bar', // Changement du type en 'bar'
-        data: {
-            labels: [<?php echo "'" . implode("','", array_map('addslashes', $dates_commandes)) . "'"; ?>],
-            datasets: [{
-                label: 'Prix des commandes (€)',
-                data: [<?php echo implode(",", $prix_commandes); ?>],
-                backgroundColor: '#36A2EB', // Couleur des barres
-                borderColor: '#36A2EB',
-                borderWidth: 1
-            }]
-        },
-        options: {
-            responsive: true,
-            plugins: {
-                legend: { display: true },
-                tooltip: {
-                    callbacks: {
-                        label: function(context) {
-                            return `Prix: ${context.raw}€`;
-                        }
-                    }
-                }
-            },
-            scales: {
-                y: {
-                    beginAtZero: true,
-                    title: {
-                        display: true,
-                        text: 'Prix (€)'
-                    }
-                }
+      type: 'bar', // Changement du type en 'bar'
+      data: {
+        labels: [<?php echo "'" . implode("','", array_map('addslashes', $dates_commandes)) . "'"; ?>],
+        datasets: [{
+          label: 'Prix des commandes (€)',
+          data: [<?php echo implode(",", $prix_commandes); ?>],
+          backgroundColor: '#36A2EB', // Couleur des barres
+          borderColor: '#36A2EB',
+          borderWidth: 1
+        }]
+      },
+      options: {
+        responsive: true,
+        plugins: {
+          legend: { display: true },
+          tooltip: {
+            callbacks: {
+              label: function (context) {
+                return `Prix: ${context.raw}€`;
+              }
             }
+          }
+        },
+        scales: {
+          y: {
+            beginAtZero: true,
+            title: {
+              display: true,
+              text: 'Prix (€)'
+            }
+          }
         }
+      }
     });
 
     // Graphique des clients

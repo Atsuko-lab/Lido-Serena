@@ -11,7 +11,7 @@ let refreshInterval;
 let notificationInterval;
 
 function chargerProduits() {
-    fetch("http://localhost/LidoSerena_Project/lidoserena/api/produits.php")
+    fetch("http://localhost/SN1/lidoserena/Lido-Serena/LidoSerena/api/produits.php")
         .then(response => response.json())
         .then(data => {
             // Remplir productMap : association nom du produit -> prix
@@ -74,7 +74,7 @@ function chargerProduits() {
 
 // Fonction pour charger les menus depuis l'API
 function chargerMenus() {
-    fetch("http://localhost/LidoSerena_Project/lidoserena/api/get_menus.php")
+    fetch("http://localhost/SN1/lidoserena/Lido-Serena/LidoSerena/api/get_menus.php")
         .then(response => response.json())
         .then(data => {
             let container = document.getElementById("menus-container");
@@ -110,7 +110,7 @@ function chargerMenus() {
 }
 
 function chargerCommande() {
-    fetch("http://localhost/LidoSerena_Project/lidoserena/api/get_commande.php")
+    fetch("http://localhost/SN1/lidoserena/Lido-Serena/LidoSerena/api/get_commande.php")
         .then(response => response.json())
         .then(data => {
             if (data.success) {
@@ -267,7 +267,7 @@ function ajouterMenuAuPanier() {
     console.log("🛠️ Catégories du menu sélectionné :", categoriesAutorisees);
 
     // Récupérer les plats correspondants
-    fetch("http://localhost/LidoSerena_Project/lidoserena/api/produits.php")
+    fetch("http://localhost/SN1/lidoserena/Lido-Serena/LidoSerena/api/produits.php")
         .then(response => response.json())
         .then(data => {
             let produitsFiltres = data.filter(produit => categoriesAutorisees.includes(parseInt(produit.categorie_id)));
@@ -485,7 +485,7 @@ function envoyerCommande() {
     console.log("📤 Données envoyées à l'API :", JSON.stringify(payload, null, 2));
 
     // 🔹 Envoi des données à l'API
-    fetch("http://localhost/LidoSerena_Project/lidoserena/api/envoyer_commande.php", {
+    fetch("http://localhost/SN1/lidoserena/Lido-Serena/LidoSerena/api/envoyer_commande.php", {
         method: "POST",
         mode: "cors",
         headers: { "Content-Type": "application/json" },
@@ -536,7 +536,7 @@ document.addEventListener('click', function (event) {
 
         if (button.dataset.confirmed === "true") {
             // Confirmation : on envoie la requête pour marquer la commande comme payée
-            fetch("http://localhost/LidoSerena_Project/lidoserena/api/payer.php", {
+            fetch("http://localhost/SN1/lidoserena/Lido-Serena/LidoSerena/api/payer.php", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ commande_id: commandeId })
@@ -587,7 +587,7 @@ function showSection(sectionId) {
 
 // Fonction pour afficher une notification toast cliquable
 function showToastNotification() {
-    fetch('http://localhost/LidoSerena_Project/lidoserena/api/get_notification.php')
+    fetch('http://localhost/SN1/lidoserena/Lido-Serena/LidoSerena/api/get_notification.php')
       .then(response => response.json())
       .then(data => {
         if (!data.success || !data.notifications || data.notifications.length === 0) {
@@ -607,7 +607,7 @@ function showToastNotification() {
         toast.innerText = message;
   
         toast.addEventListener('click', () => {
-          fetch('http://localhost/LidoSerena_Project/lidoserena/api/marquer_lu.php', {
+          fetch('http://localhost/SN1/lidoserena/Lido-Serena/LidoSerena/api/marquer_lu.php', {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json'

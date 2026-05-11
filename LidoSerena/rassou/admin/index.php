@@ -1,7 +1,7 @@
 <?php
 
 $host = 'localhost';
-$dbname = 'lidosererna';
+$dbname = 'lidoserena';
 $username = 'root';
 $password = ''; // Remplace par ton vrai mot de passe
 
@@ -30,7 +30,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['modifier'])) {
     $platModifie = htmlspecialchars($_POST['plat']);
     $prix = floatval($_POST['prix']);
     $description = htmlspecialchars($_POST['description']);
-    
+
     if (!empty($platModifie) && !empty($prix) && !empty($description)) {
         $sql = "UPDATE produits SET nom = ?, prix = ?, description = ? WHERE id = ?";
         $stmt = $conn->prepare($sql);
@@ -52,7 +52,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['ajouter'])) {
     $prix = floatval($_POST['prix']);
     $description = htmlspecialchars($_POST['description']);
     $categorie_id = intval($_POST['categorie_id']); // Ajout de la catégorie
-    
+
     if (!empty($plat) && !empty($prix) && !empty($description) && $categorie_id > 0) {
         $sql = "INSERT INTO produits (nom, prix, description, categorie_id) VALUES (?, ?, ?, ?)";
         $stmt = $conn->prepare($sql);
@@ -76,7 +76,7 @@ if (isset($_GET['supprimer_menu'])) {
     $stmt->bind_param("i", $idMenu);
     $stmt->execute();
     $stmt->close();
-    
+
     $sql = "DELETE FROM menus WHERE id = ?";
     $stmt = $conn->prepare($sql);
     $stmt->bind_param("i", $idMenu);
@@ -93,14 +93,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['ajouter_menu'])) {
     $nomMenu = htmlspecialchars($_POST['nom_menu']);
     $abreviation = htmlspecialchars($_POST['abreviation']);
     $prixMenu = floatval($_POST['prix_menu']);
-    
+
     if (!empty($nomMenu) && !empty($abreviation) && !empty($prixMenu)) {
         // Vérifier si un menu portant ce nom existe déjà
         $stmt = $conn->prepare("SELECT id FROM menus WHERE nom = ?");
         $stmt->bind_param("s", $nomMenu);
         $stmt->execute();
         $stmt->store_result();
-        
+
         if ($stmt->num_rows > 0) {
             echo "<p class='error'>Un menu portant le nom \"$nomMenu\" existe déjà.</p>";
             $stmt->close();
@@ -124,7 +124,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['ajouter_menu'])) {
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['ajouter_categorie_menu'])) {
     $menuId = intval($_POST['menu_id']);
     $categorieId = intval($_POST['categorie_id']);
-    
+
     $stmt = $conn->prepare("INSERT INTO menu_categories (menu_id, categorie_id) VALUES (?, ?)");
     $stmt->bind_param("ii", $menuId, $categorieId);
     if ($stmt->execute()) {
@@ -163,6 +163,7 @@ $resultCategories = $conn->query($sqlCategories);
 ?>
 <!DOCTYPE html>
 <html lang="fr">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -174,12 +175,14 @@ $resultCategories = $conn->query($sqlCategories);
             margin: 0;
             padding: 0;
         }
+
         h1 {
             text-align: center;
             padding: 20px;
             background-color: gray;
             color: white;
         }
+
         table {
             width: 80%;
             margin: 30px auto;
@@ -188,22 +191,30 @@ $resultCategories = $conn->query($sqlCategories);
             border-radius: 8px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         }
-        th, td {
+
+        th,
+        td {
             padding: 15px;
             text-align: center;
             border-bottom: 1px solid #ddd;
         }
+
         th {
             background-color: #f4f4f4;
             color: #333;
         }
-        input[type="text"], input[type="number"], textarea, select {
+
+        input[type="text"],
+        input[type="number"],
+        textarea,
+        select {
             width: 100%;
             padding: 8px;
             margin: 5px 0;
             border: 1px solid #ddd;
             border-radius: 5px;
         }
+
         input[type="submit"] {
             padding: 10px 20px;
             background-color: gray;
@@ -212,25 +223,30 @@ $resultCategories = $conn->query($sqlCategories);
             border-radius: 5px;
             cursor: pointer;
         }
+
         input[type="submit"]:hover {
             background-color: #45a049;
         }
+
         .error {
             color: red;
             text-align: center;
             font-weight: bold;
         }
+
         .success {
             color: green;
             text-align: center;
             font-weight: bold;
         }
+
         .delete-icon {
             color: gray;
             font-size: 20px;
             cursor: pointer;
             text-decoration: none;
         }
+
         nav {
             background-color: #333;
             padding: 10px;
@@ -249,9 +265,9 @@ $resultCategories = $conn->query($sqlCategories);
         nav a:hover {
             color: #ff9800;
         }
-
     </style>
 </head>
+
 <body>
     <nav>
         <a href="index.php">Gestion</a>
@@ -271,7 +287,7 @@ $resultCategories = $conn->query($sqlCategories);
         <tbody>
             <?php
             if ($result && $result->num_rows > 0) {
-                while($row = $result->fetch_assoc()) {
+                while ($row = $result->fetch_assoc()) {
                     echo "<tr>
                             <form action='' method='POST'>
                                 <td><input type='text' name='plat' value='" . htmlspecialchars($row['nom']) . "' required></td>
@@ -302,7 +318,7 @@ $resultCategories = $conn->query($sqlCategories);
             <option value="">Sélectionner une catégorie</option>
             <?php
             if ($resultCategories && $resultCategories->num_rows > 0) {
-                while($cat = $resultCategories->fetch_assoc()) {
+                while ($cat = $resultCategories->fetch_assoc()) {
                     echo "<option value='" . $cat['id'] . "'>" . htmlspecialchars($cat['nom']) . "</option>";
                 }
             }
@@ -354,7 +370,7 @@ $resultCategories = $conn->query($sqlCategories);
     </form>
 
     <h2 style="text-align: center;">Associer des Catégories à un Menu</h2>
-    <?php 
+    <?php
     // Récupération de toutes les catégories
     $resultCategories = $conn->query("SELECT * FROM categories ORDER BY nom ASC");
     $allCategories = ($resultCategories && $resultCategories->num_rows > 0) ? $resultCategories->fetch_all(MYSQLI_ASSOC) : [];
@@ -377,16 +393,19 @@ $resultCategories = $conn->query($sqlCategories);
                     <th>Retirer</th>
                 </tr>
                 <?php if ($resMC && $resMC->num_rows > 0): ?>
-                    <?php while($assoc = $resMC->fetch_assoc()): ?>
+                    <?php while ($assoc = $resMC->fetch_assoc()): ?>
                         <tr>
                             <td><?= htmlspecialchars($assoc['cat_nom']) ?></td>
                             <td>
-                                <a href='?supprimer_categorie_menu=<?= $assoc['mc_id'] ?>' class='delete-icon' onclick='return confirm("Retirer cette catégorie du menu ?");'>&#128465;</a>
+                                <a href='?supprimer_categorie_menu=<?= $assoc['mc_id'] ?>' class='delete-icon'
+                                    onclick='return confirm("Retirer cette catégorie du menu ?");'>&#128465;</a>
                             </td>
                         </tr>
                     <?php endwhile; ?>
                 <?php else: ?>
-                    <tr><td colspan="2">Aucune catégorie associée à ce menu.</td></tr>
+                    <tr>
+                        <td colspan="2">Aucune catégorie associée à ce menu.</td>
+                    </tr>
                 <?php endif; ?>
             </table>
             <!-- Formulaire pour associer une nouvelle catégorie au menu -->
@@ -411,6 +430,7 @@ $resultCategories = $conn->query($sqlCategories);
     <?php endif; ?>
 
 </body>
+
 </html>
 <?php
 $conn->close();
