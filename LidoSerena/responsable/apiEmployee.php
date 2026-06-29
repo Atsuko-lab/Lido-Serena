@@ -7,11 +7,12 @@ header('Access-Control-Allow-Headers: Content-Type');
 
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $stmt = $pdo->query("
-        SELECT employes.id, employes.nom, employes.prenom, employes.poste FROM employes
+        SELECT commandes.id, commandes.heurePriseCommande, 
+        commandes.heureRemisePlat, commandes.idEmployee, employes.nom, employes.prenom, employes.poste FROM commandes JOIN employes ON commandes.idEmployee = employes.id
     ");
 
-    $employee = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    $data = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-    echo json_encode($employee);
+    echo json_encode($data);
 }
 ?>
