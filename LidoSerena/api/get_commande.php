@@ -2,6 +2,9 @@
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 header("Content-Type: application/json");
+header('Access-Control-Allow-Origin: *');
+header('Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS');
+header('Access-Control-Allow-Headers: Content-Type');
 
 $pdo = require 'db.php';
 
@@ -50,7 +53,7 @@ try {
         $menus = $stmt_menus->fetchAll(PDO::FETCH_ASSOC);
 
         // Structurer les menus avec leurs produits
-        $menus_formated = array_map(function($menu) {
+        $menus_formated = array_map(function ($menu) {
             return [
                 'id' => $menu['id'],
                 'nom' => $menu['nom'],
@@ -61,8 +64,8 @@ try {
 
         // Ajouter à la liste des commandes
         $result[] = [
-            'commande_id' => (int)$commande_id,
-            'table_id' => (int)$commande['table_id'],
+            'commande_id' => (int) $commande_id,
+            'table_id' => (int) $commande['table_id'],
             'statut' => $commande['statut'],
             'produits' => $produits,
             'menus' => $menus_formated
@@ -81,4 +84,3 @@ try {
     ]);
 }
 ?>
-

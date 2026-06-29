@@ -1,10 +1,6 @@
-document.addEventListener("DOMContentLoaded", function () {
-    chargerProduits();
-    chargerMenus();
-});
-
 // Fonction pour charger les produits depuis l'API
-// Déclarer ceci en global, par exemple en haut de votre fichier tablette.js
+// Déclaration des variables globales
+let isInitialized = false;
 let productMap = {};
 let commandes = {};
 let refreshInterval;
@@ -132,6 +128,27 @@ function chargerCommande() {
             alert("Impossible de charger la commande. Essayez encore.");
         });
 }
+
+function chargerEmployee() {
+    fetch("http://localhost/SN1/lidoserena/Lido-Serena/LidoSerena/api/get_employees.php")
+        .then(response => response.json())
+        .then(data => {
+            let select = document.getElementById("employee");
+            select.innerHTML = "";
+            data.forEach(employee => {
+                let option = document.createElement("option");
+                option.value = employee.id;
+                option.textContent = employee.username;
+                select.appendChild(option);
+            });
+        })
+        .catch(error => {
+            console.error("Erreur lors de la récupération des employés:", error);
+            alert("Impossible de charger les employés. Essayez encore.");
+        });
+}
+
+chargerEmployee();
 
 function updateCommandes() {
     document.querySelectorAll('.section').forEach(section => {
@@ -382,6 +399,9 @@ function ajouterMenuAuPanier() {
 }
 
 document.addEventListener("DOMContentLoaded", function () {
+    if (isInitialized) return; // Éviter les doublons
+    isInitialized = true;
+    
     chargerProduits();
     chargerMenus();
     chargerCommande();
@@ -509,6 +529,8 @@ function envoyerCommande() {
 
 // Fonction pour gérer le paiement avec double confirmation
 document.addEventListener('click', function (event) {
+
+
     if (event.target.classList.contains('payer-btn')) {
         const button = event.target;
         const activeSection = document.querySelector('.section.active');
@@ -523,6 +545,11 @@ document.addEventListener('click', function (event) {
         // Récupérer la dernière commande pour cette table
         const dernierCommande = commandes[tableId][commandes[tableId].length - 1];
         const commandeId = dernierCommande.commande_id;
+        const idEmployee = document.getElementById('employee').value;
+        const montantPourboire = document.getElementById('pourboire').value;
+
+        console.log("💳 ID Employé sélectionné :", idEmployee);
+        console.log("💳 Montant du pourboire :", montantPourboire);
 
         console.log("🔍 ID de la table et de la commande :", tableId, commandeId);
         
@@ -535,11 +562,17 @@ document.addEventListener('click', function (event) {
         const commandeContainer = activeSection.querySelector('.commande');
 
         if (button.dataset.confirmed === "true") {
+
+            console.log("ENVOI PHP :", {
+                commande_id: commandeId,
+                pourboire: montantPourboire,
+                idEmployee: idEmployee
+            });
             // Confirmation : on envoie la requête pour marquer la commande comme payée
             fetch("http://localhost/SN1/lidoserena/Lido-Serena/LidoSerena/api/payer.php", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ commande_id: commandeId })
+                body: JSON.stringify({ commande_id: commandeId, pourboire: montantPourboire, idEmployee: idEmployee })
             })
                 .then(response => response.json())
                 .then(data => {

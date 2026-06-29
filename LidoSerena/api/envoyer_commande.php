@@ -1,6 +1,9 @@
 <?php
 error_reporting(0); // Désactiver l'affichage des erreurs PHP
 header('Content-Type: application/json');
+header('Access-Control-Allow-Origin: *');
+header('Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS');
+header('Access-Control-Allow-Headers: Content-Type');
 
 $pdo = require 'db.php';
 
@@ -10,7 +13,7 @@ $data = json_decode(file_get_contents("php://input"), true);
 // Vérification des données
 if (!$data || !isset($data['table_id']) || !isset($data['produits']) || !isset($data['menus'])) {
     die(json_encode([
-        "success" => false, 
+        "success" => false,
         "message" => "Données manquantes ou invalides"
     ]));
 }
@@ -18,7 +21,7 @@ if (!$data || !isset($data['table_id']) || !isset($data['produits']) || !isset($
 try {
     // Calcul du prix total de la commande
     $prix_total = 0;
-    
+
     // Gestion de la commande
     $commande_id = isset($data['commande_id']) ? $data['commande_id'] : null;
 

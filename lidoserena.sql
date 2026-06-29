@@ -3,9 +3,9 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : 127.0.0.1:3306
--- Généré le : mer. 19 mars 2025 à 19:47
--- Version du serveur : 8.2.0
--- Version de PHP : 8.2.13
+-- Généré le : lun. 29 juin 2026 à 08:13
+-- Version du serveur : 8.3.0
+-- Version de PHP : 8.2.18
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -49,6 +49,37 @@ INSERT INTO `categories` (`id`, `nom`) VALUES
 -- --------------------------------------------------------
 
 --
+-- Structure de la table `client`
+--
+
+DROP TABLE IF EXISTS `client`;
+CREATE TABLE IF NOT EXISTS `client` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `nom` varchar(255) NOT NULL,
+  `prenom` varchar(255) NOT NULL,
+  `points` int NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Déchargement des données de la table `client`
+--
+
+INSERT INTO `client` (`id`, `nom`, `prenom`, `points`) VALUES
+(1, 'Martin', 'Lucas', 120),
+(2, 'Bernard', 'Emma', 40),
+(3, 'Petit', 'Nathan', 310),
+(4, 'Robert', 'Chloé', 85),
+(5, 'Richard', 'Louis', 170),
+(6, 'Durand', 'Léa', 260),
+(7, 'Moreau', 'Hugo', 15),
+(8, 'Simon', 'Camille', 95),
+(9, 'Laurent', 'Tom', 450),
+(10, 'Garcia', 'Sarah', 200);
+
+-- --------------------------------------------------------
+
+--
 -- Structure de la table `commandes`
 --
 
@@ -59,47 +90,62 @@ CREATE TABLE IF NOT EXISTS `commandes` (
   `date_commande` datetime DEFAULT CURRENT_TIMESTAMP,
   `statut` enum('en cours','payé','pret','annulé') NOT NULL DEFAULT 'en cours',
   `prix_total` decimal(10,2) DEFAULT '0.00',
+  `pourboire` int NOT NULL DEFAULT '0',
+  `idEmployee` int DEFAULT NULL,
+  `idClient` int NOT NULL,
+  `heurePriseCommande` date NOT NULL,
+  `heureRemisePlat` date NOT NULL,
   PRIMARY KEY (`id`),
-  KEY `table_id` (`table_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=134 DEFAULT CHARSET=latin1;
+  KEY `table_id` (`table_id`),
+  KEY `fk_commandes_employee` (`idEmployee`)
+) ENGINE=InnoDB AUTO_INCREMENT=143 DEFAULT CHARSET=latin1;
 
 --
 -- Déchargement des données de la table `commandes`
 --
 
-INSERT INTO `commandes` (`id`, `table_id`, `date_commande`, `statut`, `prix_total`) VALUES
-(47, 1, '2025-03-12 16:29:44', 'payé', 0.00),
-(48, 2, '2025-03-12 16:29:53', 'payé', 0.00),
-(49, 1, '2025-03-16 01:59:14', 'payé', 0.00),
-(50, 1, '2025-03-16 02:42:58', 'payé', 0.00),
-(51, 1, '2025-03-16 02:45:58', 'payé', 0.00),
-(52, 6, '2025-03-16 12:12:50', 'payé', 0.00),
-(53, 1, '2025-03-17 01:23:14', 'payé', 0.00),
-(54, 1, '2025-03-17 18:12:12', 'payé', 0.00),
-(55, 6, '2025-03-17 18:12:58', 'payé', 0.00),
-(56, 5, '2025-03-17 18:13:17', 'payé', 0.00),
-(57, 1, '2025-03-17 18:15:17', 'payé', 89.00),
-(58, 1, '2025-03-17 18:19:30', 'payé', 344.80),
-(59, 2, '2025-03-17 18:24:51', 'payé', 9.00),
-(60, 1, '2025-03-17 18:27:37', 'payé', 38.50),
-(61, 1, '2025-03-17 18:28:03', 'payé', 47.50),
-(117, 1, '2025-03-17 19:21:51', 'payé', 0.00),
-(118, 1, '2025-03-17 19:24:18', 'payé', 0.00),
-(119, 1, '2025-03-17 19:25:35', 'payé', 40.00),
-(120, 1, '2025-03-17 19:26:08', 'payé', 177.50),
-(121, 3, '2025-03-17 19:54:19', 'payé', 19.00),
-(122, 2, '2025-03-17 19:57:53', 'payé', 23.50),
-(123, 1, '2025-03-17 20:12:38', 'payé', 60.10),
-(124, 1, '2025-03-17 20:29:50', 'payé', 9.50),
-(125, 1, '2025-03-17 21:53:23', 'payé', 20.00),
-(126, 1, '2025-03-17 22:15:40', 'payé', 20.00),
-(127, 1, '2025-03-19 12:16:31', 'payé', 43.40),
-(128, 6, '2025-03-19 12:18:35', 'payé', 30.50),
-(129, 2, '2025-03-19 12:19:07', 'payé', 34.00),
-(130, 4, '2025-03-19 12:26:15', 'payé', 16.00),
-(131, 4, '2025-03-19 12:26:16', 'payé', 16.00),
-(132, 1, '2025-03-19 20:05:08', 'payé', 37.00),
-(133, 1, '2025-03-19 20:21:44', 'payé', 42.50);
+INSERT INTO `commandes` (`id`, `table_id`, `date_commande`, `statut`, `prix_total`, `pourboire`, `idEmployee`, `idClient`, `heurePriseCommande`, `heureRemisePlat`) VALUES
+(47, 1, '2025-03-12 16:29:44', 'payé', 0.00, 0, NULL, 0, '0000-00-00', '0000-00-00'),
+(48, 2, '2025-03-12 16:29:53', 'payé', 0.00, 0, NULL, 0, '0000-00-00', '0000-00-00'),
+(49, 1, '2025-03-16 01:59:14', 'payé', 0.00, 0, NULL, 0, '0000-00-00', '0000-00-00'),
+(50, 1, '2025-03-16 02:42:58', 'payé', 0.00, 0, NULL, 0, '0000-00-00', '0000-00-00'),
+(51, 1, '2025-03-16 02:45:58', 'payé', 0.00, 0, NULL, 0, '0000-00-00', '0000-00-00'),
+(52, 6, '2025-03-16 12:12:50', 'payé', 0.00, 0, NULL, 0, '0000-00-00', '0000-00-00'),
+(53, 1, '2025-03-17 01:23:14', 'payé', 0.00, 0, NULL, 0, '0000-00-00', '0000-00-00'),
+(54, 1, '2025-03-17 18:12:12', 'payé', 0.00, 0, NULL, 0, '0000-00-00', '0000-00-00'),
+(55, 6, '2025-03-17 18:12:58', 'payé', 0.00, 0, NULL, 0, '0000-00-00', '0000-00-00'),
+(56, 5, '2025-03-17 18:13:17', 'payé', 0.00, 0, NULL, 0, '0000-00-00', '0000-00-00'),
+(57, 1, '2025-03-17 18:15:17', 'payé', 89.00, 0, NULL, 0, '0000-00-00', '0000-00-00'),
+(58, 1, '2025-03-17 18:19:30', 'payé', 344.80, 0, NULL, 0, '0000-00-00', '0000-00-00'),
+(59, 2, '2025-03-17 18:24:51', 'payé', 9.00, 0, NULL, 0, '0000-00-00', '0000-00-00'),
+(60, 1, '2025-03-17 18:27:37', 'payé', 38.50, 0, NULL, 0, '0000-00-00', '0000-00-00'),
+(61, 1, '2025-03-17 18:28:03', 'payé', 47.50, 0, NULL, 0, '0000-00-00', '0000-00-00'),
+(117, 1, '2025-03-17 19:21:51', 'payé', 0.00, 0, NULL, 0, '0000-00-00', '0000-00-00'),
+(118, 1, '2025-03-17 19:24:18', 'payé', 0.00, 0, NULL, 0, '0000-00-00', '0000-00-00'),
+(119, 1, '2025-03-17 19:25:35', 'payé', 40.00, 0, NULL, 0, '0000-00-00', '0000-00-00'),
+(120, 1, '2025-03-17 19:26:08', 'payé', 177.50, 0, NULL, 0, '0000-00-00', '0000-00-00'),
+(121, 3, '2025-03-17 19:54:19', 'payé', 19.00, 0, NULL, 0, '0000-00-00', '0000-00-00'),
+(122, 2, '2025-03-17 19:57:53', 'payé', 23.50, 0, NULL, 0, '0000-00-00', '0000-00-00'),
+(123, 1, '2025-03-17 20:12:38', 'payé', 60.10, 0, NULL, 0, '0000-00-00', '0000-00-00'),
+(124, 1, '2025-03-17 20:29:50', 'payé', 9.50, 0, NULL, 0, '0000-00-00', '0000-00-00'),
+(125, 1, '2025-03-17 21:53:23', 'payé', 20.00, 0, NULL, 0, '0000-00-00', '0000-00-00'),
+(126, 1, '2025-03-17 22:15:40', 'payé', 20.00, 0, NULL, 0, '0000-00-00', '0000-00-00'),
+(127, 1, '2025-03-19 12:16:31', 'payé', 43.40, 0, NULL, 0, '0000-00-00', '0000-00-00'),
+(128, 6, '2025-03-19 12:18:35', 'payé', 30.50, 0, NULL, 0, '0000-00-00', '0000-00-00'),
+(129, 2, '2025-03-19 12:19:07', 'payé', 34.00, 0, NULL, 0, '0000-00-00', '0000-00-00'),
+(130, 4, '2025-03-19 12:26:15', 'payé', 16.00, 0, NULL, 0, '0000-00-00', '0000-00-00'),
+(131, 4, '2025-03-19 12:26:16', 'payé', 16.00, 0, NULL, 0, '0000-00-00', '0000-00-00'),
+(132, 1, '2025-03-19 20:05:08', 'payé', 37.00, 0, NULL, 0, '0000-00-00', '0000-00-00'),
+(133, 1, '2025-03-19 20:21:44', 'payé', 42.50, 0, NULL, 0, '0000-00-00', '0000-00-00'),
+(134, 1, '2026-06-16 10:05:24', 'payé', 10.00, 0, NULL, 0, '0000-00-00', '0000-00-00'),
+(135, 2, '2026-06-16 10:45:51', 'payé', 51.00, 0, NULL, 0, '0000-00-00', '0000-00-00'),
+(136, 2, '2026-06-16 11:01:29', 'payé', 42.50, 0, NULL, 0, '0000-00-00', '0000-00-00'),
+(137, 2, '2026-06-16 11:05:24', 'payé', 34.00, 0, NULL, 0, '0000-00-00', '0000-00-00'),
+(138, 2, '2026-06-16 11:05:58', 'payé', 25.50, 0, NULL, 0, '0000-00-00', '0000-00-00'),
+(139, 2, '2026-06-16 11:06:40', 'payé', 17.00, 0, NULL, 0, '0000-00-00', '0000-00-00'),
+(140, 2, '2026-06-16 11:08:27', 'payé', 25.50, 0, NULL, 0, '0000-00-00', '0000-00-00'),
+(141, 2, '2026-06-16 11:22:28', 'en cours', 25.50, 0, NULL, 0, '0000-00-00', '0000-00-00'),
+(142, 1, '2026-06-16 11:23:41', 'payé', 25.50, 44, 2, 0, '0000-00-00', '0000-00-00');
 
 -- --------------------------------------------------------
 
@@ -117,7 +163,7 @@ CREATE TABLE IF NOT EXISTS `commandes_details` (
   PRIMARY KEY (`id`),
   KEY `commande_id` (`commande_id`),
   KEY `produit_id` (`produit_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=319 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=353 DEFAULT CHARSET=latin1;
 
 --
 -- Déchargement des données de la table `commandes_details`
@@ -267,7 +313,41 @@ INSERT INTO `commandes_details` (`id`, `commande_id`, `produit_id`, `prix_unitai
 (315, 133, 52, 6.00, 'en_cours'),
 (316, 133, 34, 8.50, 'en_cours'),
 (317, 133, 34, 8.50, 'en_cours'),
-(318, 133, 49, 3.00, 'en_cours');
+(318, 133, 49, 3.00, 'en_cours'),
+(319, 134, 48, 2.00, 'en_cours'),
+(320, 134, 48, 2.00, 'en_cours'),
+(321, 134, 48, 2.00, 'en_cours'),
+(322, 134, 48, 2.00, 'en_cours'),
+(323, 134, 48, 2.00, 'en_cours'),
+(324, 135, 34, 8.50, 'en_cours'),
+(325, 135, 34, 8.50, 'en_cours'),
+(326, 135, 34, 8.50, 'en_cours'),
+(327, 135, 34, 8.50, 'en_cours'),
+(328, 135, 34, 8.50, 'en_cours'),
+(329, 135, 34, 8.50, 'en_cours'),
+(330, 136, 34, 8.50, 'en_cours'),
+(331, 136, 34, 8.50, 'en_cours'),
+(332, 136, 34, 8.50, 'en_cours'),
+(333, 136, 34, 8.50, 'en_cours'),
+(334, 136, 34, 8.50, 'en_cours'),
+(335, 137, 34, 8.50, 'en_cours'),
+(336, 137, 34, 8.50, 'en_cours'),
+(337, 137, 34, 8.50, 'en_cours'),
+(338, 137, 34, 8.50, 'en_cours'),
+(339, 138, 34, 8.50, 'en_cours'),
+(340, 138, 34, 8.50, 'en_cours'),
+(341, 138, 34, 8.50, 'en_cours'),
+(342, 139, 34, 8.50, 'en_cours'),
+(343, 139, 34, 8.50, 'en_cours'),
+(344, 140, 34, 8.50, 'en_cours'),
+(345, 140, 34, 8.50, 'en_cours'),
+(346, 140, 34, 8.50, 'en_cours'),
+(347, 141, 34, 8.50, 'en_cours'),
+(348, 141, 34, 8.50, 'en_cours'),
+(349, 141, 34, 8.50, 'en_cours'),
+(350, 142, 34, 8.50, 'en_cours'),
+(351, 142, 34, 8.50, 'en_cours'),
+(352, 142, 34, 8.50, 'en_cours');
 
 -- --------------------------------------------------------
 
@@ -388,6 +468,38 @@ INSERT INTO `commandes_menus_details` (`id`, `commande_id`, `menu_id`, `produit_
 (131, 127, 45, 43, 0.00, 'plat', 'en_cours'),
 (132, 129, 45, 52, 0.00, 'plat', 'en_cours'),
 (133, 129, 45, 43, 0.00, 'plat', 'en_cours');
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `employes`
+--
+
+DROP TABLE IF EXISTS `employes`;
+CREATE TABLE IF NOT EXISTS `employes` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `nom` varchar(255) NOT NULL,
+  `prenom` varchar(255) NOT NULL,
+  `dateEmbauche` date NOT NULL,
+  `poste` varchar(255) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Déchargement des données de la table `employes`
+--
+
+INSERT INTO `employes` (`id`, `nom`, `prenom`, `dateEmbauche`, `poste`) VALUES
+(1, 'Dupont', 'Jean', '2021-03-15', 'Serveur'),
+(2, 'Martin', 'Sophie', '2020-09-01', 'Serveur'),
+(3, 'Bernard', 'Lucas', '2022-01-10', 'Serveur'),
+(4, 'Petit', 'Emma', '2019-06-25', 'Serveur'),
+(5, 'Robert', 'Nathan', '2023-02-14', 'Commercial'),
+(6, 'Richard', 'Camille', '2021-11-08', 'Secrétaire'),
+(7, 'Durand', 'Thomas', '2018-04-30', 'Chef de projet'),
+(8, 'Moreau', 'Julie', '2022-08-22', 'Assistante administrative'),
+(9, 'Simon', 'Hugo', '2020-12-05', 'Informaticien'),
+(10, 'Laurent', 'Chloé', '2024-01-15', 'Stagiaire');
 
 -- --------------------------------------------------------
 
@@ -534,6 +646,7 @@ CREATE TABLE IF NOT EXISTS `produits` (
   `description` text,
   `prix` decimal(10,2) NOT NULL,
   `categorie_id` int NOT NULL,
+  `points` int NOT NULL,
   PRIMARY KEY (`id`),
   KEY `categorie_id` (`categorie_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=60 DEFAULT CHARSET=latin1;
@@ -542,31 +655,60 @@ CREATE TABLE IF NOT EXISTS `produits` (
 -- Déchargement des données de la table `produits`
 --
 
-INSERT INTO `produits` (`id`, `nom`, `description`, `prix`, `categorie_id`) VALUES
-(34, 'Margherita', 'Tomate, mozzarella, basilic', 8.50, 16),
-(35, 'Pepperoni', 'Tomate, mozzarella, pepperoni', 9.50, 16),
-(36, 'Quatre Fromages', 'Mozzarella, gorgonzola, parmesan, chèvre', 10.00, 16),
-(37, 'Végétarienne', 'Tomate, mozzarella, poivrons, champignons, oignons', 9.00, 16),
-(38, 'Calzone', 'Tomate, mozzarella, jambon, champignons', 10.50, 16),
-(39, 'Spaghetti Bolognaise', 'Sauce tomate, viande hachée', 11.00, 20),
-(40, 'Penne Carbonara', 'Crème, lardons, parmesan', 12.00, 20),
-(41, 'Lasagnes', 'Viande hachée, sauce tomate, béchamel', 13.50, 20),
-(42, 'Entrecôte grillée', 'Viande de bœuf grillée avec frites', 18.00, 19),
-(43, 'Poulet rôti', 'Poulet fermier rôti avec pommes de terre', 15.00, 19),
-(44, 'Poisson du jour', 'Poisson frais accompagné de légumes', 17.00, 19),
-(45, 'Tiramisu', 'Mascarpone, café, cacao', 6.00, 18),
-(46, 'Mousse au chocolat', 'Chocolat noir, œufs, sucre', 5.50, 18),
-(47, 'Crème brûlée', 'Vanille, sucre caramélisé', 6.50, 18),
-(48, 'Eau minérale', 'Bouteille de 50cl', 2.00, 17),
-(49, 'Coca-Cola', 'Canette 33cl', 3.00, 17),
-(50, 'Jus d’orange', 'Jus pressé frais', 4.50, 17),
-(51, 'Vin rouge', 'Verre 12cl', 5.50, 17),
-(52, 'Bière pression', 'Pinte 50cl', 6.00, 17),
-(53, 'Tiramisu', 'Dessert italien au café et mascarpone', 5.50, 18),
-(54, 'Fondant au chocolat', 'Gâteau au cœur coulant de chocolat', 6.00, 18),
-(55, 'Crème brûlée', 'Crème à la vanille avec une couche caramélisée', 4.50, 18),
-(56, 'Cheesecake', 'Gâteau au fromage frais avec un coulis de fruits rouges', 5.80, 18),
-(57, 'Mille-feuille', 'Pâtisserie feuilletée avec crème pâtissière', 4.90, 18);
+INSERT INTO `produits` (`id`, `nom`, `description`, `prix`, `categorie_id`, `points`) VALUES
+(34, 'Margherita', 'Tomate, mozzarella, basilic', 8.50, 16, 50),
+(35, 'Pepperoni', 'Tomate, mozzarella, pepperoni', 9.50, 16, 20),
+(36, 'Quatre Fromages', 'Mozzarella, gorgonzola, parmesan, chèvre', 10.00, 16, 0),
+(37, 'Végétarienne', 'Tomate, mozzarella, poivrons, champignons, oignons', 9.00, 16, 0),
+(38, 'Calzone', 'Tomate, mozzarella, jambon, champignons', 10.50, 16, 0),
+(39, 'Spaghetti Bolognaise', 'Sauce tomate, viande hachée', 11.00, 20, 0),
+(40, 'Penne Carbonara', 'Crème, lardons, parmesan', 12.00, 20, 0),
+(41, 'Lasagnes', 'Viande hachée, sauce tomate, béchamel', 13.50, 20, 0),
+(42, 'Entrecôte grillée', 'Viande de bœuf grillée avec frites', 18.00, 19, 0),
+(43, 'Poulet rôti', 'Poulet fermier rôti avec pommes de terre', 15.00, 19, 0),
+(44, 'Poisson du jour', 'Poisson frais accompagné de légumes', 17.00, 19, 0),
+(45, 'Tiramisu', 'Mascarpone, café, cacao', 6.00, 18, 0),
+(46, 'Mousse au chocolat', 'Chocolat noir, œufs, sucre', 5.50, 18, 0),
+(47, 'Crème brûlée', 'Vanille, sucre caramélisé', 6.50, 18, 2),
+(48, 'Eau minérale', 'Bouteille de 50cl', 2.00, 17, 0),
+(49, 'Coca-Cola', 'Canette 33cl', 3.00, 17, 0),
+(50, 'Jus d’orange', 'Jus pressé frais', 4.50, 17, 0),
+(51, 'Vin rouge', 'Verre 12cl', 5.50, 17, 0),
+(52, 'Bière pression', 'Pinte 50cl', 6.00, 17, 0),
+(53, 'Tiramisu', 'Dessert italien au café et mascarpone', 5.50, 18, 0),
+(54, 'Fondant au chocolat', 'Gâteau au cœur coulant de chocolat', 6.00, 18, 0),
+(55, 'Crème brûlée', 'Crème à la vanille avec une couche caramélisée', 4.50, 18, 0),
+(56, 'Cheesecake', 'Gâteau au fromage frais avec un coulis de fruits rouges', 5.80, 18, 0),
+(57, 'Mille-feuille', 'Pâtisserie feuilletée avec crème pâtissière', 4.90, 18, 0);
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `récompenses`
+--
+
+DROP TABLE IF EXISTS `récompenses`;
+CREATE TABLE IF NOT EXISTS `récompenses` (
+  `id` int NOT NULL,
+  `nbrPoints` int NOT NULL,
+  `descriptionRécompenses` varchar(255) NOT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Déchargement des données de la table `récompenses`
+--
+
+INSERT INTO `récompenses` (`id`, `nbrPoints`, `descriptionRécompenses`) VALUES
+(0, 50, 'Boisson offerte'),
+(0, 100, 'Dessert offert'),
+(0, 150, 'Pizza junior gratuite'),
+(0, 200, 'Réduction de 10 %'),
+(0, 300, 'Pizza moyenne offerte'),
+(0, 400, 'Menu complet offert'),
+(0, 500, 'Pizza familiale offerte'),
+(0, 700, 'Bon d\'achat de 20 €'),
+(0, 1000, 'Repas pour deux personnes'),
+(0, 1500, 'Soirée VIP avec menu gratuit');
 
 -- --------------------------------------------------------
 
@@ -627,7 +769,8 @@ INSERT INTO `users` (`id`, `username`, `password`, `role`) VALUES
 -- Contraintes pour la table `commandes`
 --
 ALTER TABLE `commandes`
-  ADD CONSTRAINT `commandes_ibfk_1` FOREIGN KEY (`table_id`) REFERENCES `tables` (`id`) ON DELETE CASCADE;
+  ADD CONSTRAINT `commandes_ibfk_1` FOREIGN KEY (`table_id`) REFERENCES `tables` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `fk_commandes_employee` FOREIGN KEY (`idEmployee`) REFERENCES `users` (`id`) ON DELETE SET NULL ON UPDATE CASCADE;
 
 --
 -- Contraintes pour la table `commandes_details`
